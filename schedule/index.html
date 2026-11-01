@@ -285,7 +285,7 @@ function flow(a) {
   return s;
 }
 const ARC = {   // 2026-10-31 (Shaka): catchier, aloha-filled day intros
-  'November 3': '🌅 Tue · opening day! 🤫 the ceremony first, then Gujarat folk, Songs of India & raga on electric guitar 🎸 · from 4:00 Open Source Orchestra CROPS Jamming for Ethereum’s values 🌾 every musician & singer, come warm the floor 🌺',
+  'November 3': '🌅 Tue · opening day! 🤫 the ceremony first, then Gujarat folk, Songs of India & raga on electric guitar 🎸 · 2:30 singer-songwriter Vivek Teegalapally 🎶 · from 4:00 Open Source Orchestra CROPS Jamming for Ethereum’s values 🌾 every musician & singer, come warm the floor 🌺',
   'November 4': '☕ Wed · coffee-lounge Wednesday 🎷 modular synths, acoustic fire, a room that writes a song together & live code 💻 · from 4:00 the Open Source Orchestra jams for Ethereum’s values 🌾 · no DJ sets today 🤙',
   'November 5': '🎤 Thu · the big one! 🧘 morning meditations → piano keys, Bollywood & the songwriters’ circle 🎶 · after four ALL our DJs share one floor 🤝 Naman, mannuu, huzzhouse, Simulacra, itscharann, Ekant, DJ Chalk & Vedz tag-team till the last dance 🔥🌺',
   'November 6': '🌺 Fri · the long goodbye 🤙 Open Source Orchestra all morning · Sounya · India’s own · Manu’s tribal downtempo · Alaska’s low-volume sundown · 3:33 Shaka + Open Source Orchestra glide into the Devcon closing party 🎉',
@@ -628,15 +628,32 @@ function magicHTML(t) {
 }
 /* an OSO jam that the trick falls inside splits around it: jam · trick · jam (either side kept if ≥ 5 min).
    state.done guards one trick per day; a day whose windows never cover the time gets a fit note instead. */
+/* 2026-11-01 (Shaka): a featured artist carved out of an Open Source Orchestra jam, like the trick */
+const FEATURE = { 'November 3': { at: 14*60 + 30, mins: 30, name: '🎸 Vivek Teegalapally', sub: 'featured singer-songwriter · guitar & voice · jazzy, improvised', avatar: 'avatars/vivek-teega.jpg', links: [{ platform: 'Instagram', url: 'https://www.instagram.com/vivekteega/' }, { platform: 'profile', url: '../garden/profiles/#vivek-teega' }] } };
+function featHTML(f) {
+  return `<div class="slot"><span class="time">${fmtTime(f.at)}</span>
+    <div class="body">
+      <div class="whohead"><img class="ava" src="${esc(f.avatar)}" alt="" loading="lazy" onerror="this.style.display='none'">
+      <div class="who">${f.name}</div></div>
+      <div class="tags"><span class="dim">Live ·</span> ${minsTxt(f.mins)} <span class="dim">·</span> ${f.sub}</div>
+      <div class="links">${f.links.map(l => `<a class="lnk" href="${l.url}" target="_blank" rel="noopener">${l.platform} ↗</a>`).join('')}</div>
+    </div></div>`;
+}
+function featJamHTML(d, t, mins, label, sub) {
+  const f = FEATURE[d];
+  if (!f || f.at < t || f.at + f.mins > t + mins) return jamHTML(t, mins, label, sub);
+  const pre = f.at - t, post = t + mins - (f.at + f.mins);
+  return (pre >= 5 ? jamHTML(t, pre, label, sub) : '') + featHTML(f) + (post >= 5 ? jamHTML(f.at + f.mins, post, label, sub) : '');
+}
 function jamSplitHTML(d, t, mins, label, sub, state) {
   const m = MAGIC[d];
-  if (!m || !state || state.done || m.at < t || m.at + MAGIC_MINS > t + mins) return jamHTML(t, mins, label, sub);
+  if (!m || !state || state.done || m.at < t || m.at + MAGIC_MINS > t + mins) return featJamHTML(d, t, mins, label, sub);
   state.done = true;
   const pre = m.at - t, post = (t + mins) - (m.at + MAGIC_MINS);
   let h = '';
-  if (pre >= 5) h += jamHTML(t, pre, label, sub);
+  if (pre >= 5) h += featJamHTML(d, t, pre, label, sub);
   h += magicHTML(m.at);
-  if (post >= 5) h += jamHTML(m.at + MAGIC_MINS, post, label, sub);
+  if (post >= 5) h += featJamHTML(d, m.at + MAGIC_MINS, post, label, sub);
   return h;
 }
 function jamHTML(t, mins, label, sub) {
@@ -1011,14 +1028,19 @@ function copyDay(b) {
   const ms = { done: false };
   const qv = vibe(d, 'quiet', ['quiet-hours open jam', '']); const qLab = qv[0].replace(/^[^A-Za-z]*(?:OSO|Open Source Orchestra) — /, ''), qSub = qv[1] || undefined;
     const magicLine = tt => lines.push(`${fmtTime(tt)}  🎩 0xMentalist — a trick · ${MAGIC_MINS} min · mentalism & close-up magic, not music · one wireless handheld mic · 📸 ${MAGIC_LINKS[0].url}`);
+  const fJam = (tt, mins, label, sub) => { const f = FEATURE[d];
+    if (!f || f.at < tt || f.at + f.mins > tt + mins) return jamLine(tt, mins, label, sub);
+    if (f.at - tt >= 5) jamLine(tt, f.at - tt, label, sub);
+    lines.push(`${fmtTime(f.at)}  ${f.name} — ${f.mins} min · ${f.sub}`);
+    if (tt + mins - f.at - f.mins >= 5) jamLine(f.at + f.mins, tt + mins - f.at - f.mins, label, sub); };
   const jamSplit = (tt, mins, label, sub) => {
     const m = MAGIC[d];
-    if (!m || ms.done || m.at < tt || m.at + MAGIC_MINS > tt + mins) return jamLine(tt, mins, label, sub);
+    if (!m || ms.done || m.at < tt || m.at + MAGIC_MINS > tt + mins) return fJam(tt, mins, label, sub);
     ms.done = true;
     const pre = m.at - tt, post = (tt + mins) - (m.at + MAGIC_MINS);
-    if (pre >= 5) jamLine(tt, pre, label, sub);
+    if (pre >= 5) fJam(tt, pre, label, sub);
     magicLine(m.at);
-    if (post >= 5) jamLine(m.at + MAGIC_MINS, post, label, sub);
+    if (post >= 5) fJam(m.at + MAGIC_MINS, post, label, sub);
   };
   /* chill side — mirrors render() exactly: ceremony silence, pinned acts, the OSO jams, anchored closers
      (2026-10-15: previously this printed raw door-times — wrong on ceremony + pinned days. Fixed.) */
