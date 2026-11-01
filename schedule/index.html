@@ -811,14 +811,14 @@ function render() {
       if (i < anchored.length - 1) { slots += `<div class="gap">↑ ${cC}m changeover</div>`; t += cC; }
     });
     const hand = HANDOVER.has(d);
-    if (!hand) slots += liftHTML;
+    if (!hand && energyActs.length) slots += liftHTML;   // 2026-11-01: no DJs (Nov 3) → no DJ-booth lift row
     if (hand) slots += handoverHTML;
     else if (isLast) slots += partyheadHTML;
     if (!hand) {
       const vc = vibe(d, 'close', ['🌆 Open Source Orchestra — the closing jam', 'the last 15 minutes · one more tune together · last note 6:00p sharp']);
       if (!energyActs.length) {
         const v = vibe(d, 'tail', ['Open Source Orchestra — open decks all evening', 'the floor is open · bring a USB, bring a friend']);
-        slots += jamSplitHTML(d, LIFT, loudEnd - LIFT, v[0], v[1], ms);
+        slots += jamSplitHTML(d, LIFT, CLOSE - LIFT, v[0], v[1], ms);   // 2026-11-01 (Shaka): Open Source Orchestra is already on the floor → no separate closing jam
       } else {
         if (frontJam) { const v = vibe(d, 'tail', ['Open Source Orchestra — open decks', 'the floor is open · bring a USB, bring a friend']); slots += jamSplitHTML(d, LIFT, frontJam, v[0], v[1], ms); }
         /* 2026-10-28: one row per act (whole set, drag-safe) + a "sharing the floor" row for every overlap + changeover
@@ -830,7 +830,7 @@ function render() {
         });
       }
       const onAtClose = lay.iv.filter(x => x.e > loudEnd).map(x => x.a);
-      if (onAtClose.length) slots += shareHTML(onAtClose, loudEnd, CLOSE, vc[0], vc[1]);   // the closing jam joins whoever is still on — nobody is cut
+      if (!energyActs.length) {} else if (onAtClose.length) slots += shareHTML(onAtClose, loudEnd, CLOSE, vc[0], vc[1]);   // the closing jam joins whoever is still on — nobody is cut
       else slots += jamSplitHTML(d, loudEnd, TAIL, vc[0], vc[1], ms);   // the law: exactly 15 min, the last note lands 6:00p sharp
     }
     let n6 = 0;
@@ -1043,19 +1043,19 @@ function copyDay(b) {
   if (efB2) lines.push(`${fmtTime(efB2.from)}  ${efB2.label.replace(/<[^>]+>/g, '')} — ${fmtTime(efB2.from)}–${fmtTime(efB2.to)} · the EF’s own musicians on the floor (names appear when each says yes) · pass-the-aux`);
   t = LIFT - endSpan;
   anchored.forEach((a, i) => { actLine(a, t); t += a.minutes + (i < anchored.length - 1 ? cC : 0); });
-  lines.push(`4:00p  🔊 THE VOLUME LIFTS — DJ booth rolls mid-floor · boiler-room time`);
+  if (energyActs.length) lines.push(`4:00p  🔊 THE VOLUME LIFTS — DJ booth rolls mid-floor · boiler-room time`);
   if (hand) lines.push(`4:00p  🎉 CLOSING PARTY — hosted by the Devcon team · feat. 🎧 DJ AMOGH (India · Devcon crew, keeps the wifi alive) — Bollywood closing set · the Music Space hands the room over`);
   else if (isLast) lines.push(`       🎉 CLOSING PARTY hosted by OPEN SOURCE ORCHESTRA — the whole loud window is the party`);
   if (!hand) {
     if (frontJam) jamSplit(LIFT, frontJam, 'open decks', 'the floor warms up');
-    if (!energyActs.length) jamSplit(LIFT, loudEnd - LIFT, 'open decks', 'the floor is open all evening');
+    if (!energyActs.length) { const v = vibe(d, 'tail', ['open decks', 'the floor is open all evening']); jamSplit(LIFT, CLOSE - LIFT, v[0].replace(/^.*?— /, ''), v[1]); }
     floorClusters(lay.iv).forEach(c => {
       if (c.m.length === 1) return actLine(c.m[0].a, c.s);
       lines.push(`${fmtTime(c.s)}  🤝 SHARED FLOOR ${fmtTime(c.s)}–${fmtTime(c.e)} · ${c.m.length} DJs ${c.m.length === 2 ? 'b2b' : 'tag-team'} · nobody is trimmed`);
       c.m.forEach(x => lines.push(`   ↳ ${fmtTime(x.s)}–${fmtTime(x.e)}  ${FMT[x.a.format]} ${nameOf(x.a)} — ${x.a.minutes} min · ${genresOf(x.a).join(', ')}${x.a.links.length ? ' · 🎵 ' + x.a.links[0].url : ''}`));
     });
     const onAtClose = lay.iv.filter(x => x.e > loudEnd).map(x => nameOf(x.a));
-    if (onAtClose.length) lines.push(`${fmtTime(loudEnd)}  🤝 ${onAtClose.join(' + ')} + OPEN SOURCE ORCHESTRA — the closing jam, SHARING THE FLOOR · 15 min · one more tune together · last note ${fmtTime(CLOSE)} sharp`);
+    if (!energyActs.length) {} else if (onAtClose.length) lines.push(`${fmtTime(loudEnd)}  🤝 ${onAtClose.join(' + ')} + OPEN SOURCE ORCHESTRA — the closing jam, SHARING THE FLOOR · 15 min · one more tune together · last note ${fmtTime(CLOSE)} sharp`);
     else jamSplit(loudEnd, TAIL, 'the closing jam', `one more tune together · last note ${fmtTime(CLOSE)} sharp`);
   }
   if (NOV6[d]) lines.splice(1, lines.length - 1, ...nov6Lines(d));
