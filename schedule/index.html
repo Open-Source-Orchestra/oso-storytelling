@@ -286,8 +286,8 @@ function flow(a) {
 }
 const ARC = {   // 2026-10-31 (Shaka): catchier, aloha-filled day intros
   'November 3': '🌅 Tue · opening day! 🤫 the ceremony first, then Gujarat folk, Songs of India & raga on electric guitar 🎸 · from 4:00 Open Source Orchestra CROPS Jamming for Ethereum’s values 🌾 every musician & singer, come warm the floor 🌺',
-  'November 4': '☕ Wed · coffee-lounge Wednesday 🎷 modular synths, acoustic fire, a room that writes a song together & live code 💻 · after four EVERYONE shares the floor 🤝 Vedz, Simulacra, itscharann, Ekant, huzzhouse & DJ Chalk tag-team till the closing jam 💃🤙',
-  'November 5': '🎤 Thu · the big one! 🧘 morning meditations → piano keys, Bollywood & the songwriters’ circle 🎶 · after four Naman streams zk-proofs through the decks & mannuu brings the burn 🔥🌺',
+  'November 4': '☕ Wed · coffee-lounge Wednesday 🎷 modular synths, acoustic fire, a room that writes a song together & live code 💻 · after four the floor is shared 🤝 Vedz, itscharann, Ekant & DJ Chalk tag-team till the closing jam 💃🤙',
+  'November 5': '🎤 Thu · the big one! 🧘 morning meditations → piano keys, Bollywood & the songwriters’ circle 🎶 · after four the floor is shared 🤝 Naman streams zk-proofs, mannuu brings the burn, huzzhouse & Simulacra land a Punjabi wedding 🔥🌺',
   'November 6': '🌺 Fri · the long goodbye 🤙 Open Source Orchestra all morning · Sounya · India’s own · Manu’s tribal downtempo · Alaska’s low-volume sundown · 3:33 Shaka + Open Source Orchestra glide into the Devcon closing party 🎉',
 };
 // biggest changeover (5-min steps, never above the pick, never below 5m) that fits start→end
@@ -305,7 +305,8 @@ function fitChg(n, music, startMin, endMin, want) {
    rehearsal (vault/rehearsal/001-v3). Any other arrangement (someone dragging) gets the generic layout below. */
 const FLOOR = {
   // 2026-11-01 (Shaka): Devcon has not received the DJ license for Nov 3 yet → ALL Nov 3 DJ sets cancelled (safest), the 4 DJs move to Wed 4 Nov after 4 and share the floor  // 🤝 shared tag-team floor: itscharann + Ekant + huzzhouse + DJ Chalk ALL 4:00-5:45 (Shaka 31 Oct, #nooneiseverout) · 5:45 closing jam · Perrie moved to Nov 6 talk-time chill set (Shaka 29 Oct 02:40 UTC)
-  'November 4': { 20: [16*60, 17*60 + 45], 27: [16*60, 17*60 + 45], 23: [16*60, 17*60 + 45], 28: [16*60, 17*60 + 45], 16: [16*60, 17*60 + 45], 35: [16*60, 17*60 + 45] },   // 2026-11-01 (Shaka): everyone shares the floor 4:00-5:45 — Vedz + Simulacra + itscharann + Ekant + huzzhouse + DJ Chalk · 5:45 closing jam   // Vedz SOLO 4:00-5:00 in the slot Colors Still Fly held (Shaka 31 Oct: Colors Still Fly off the schedule, still in the garden circle + stewards) · Simulacra 5:00-6:00 (the closing jam joins at 5:45)
+  'November 4': { 20: [16*60, 17*60 + 45], 23: [16*60, 17*60 + 45], 28: [16*60, 17*60 + 45], 35: [16*60, 17*60 + 45] },   // 2026-11-01 (Shaka): Vedz + itscharann + Ekant + DJ Chalk share the floor 4:00-5:45 · 5:45 closing jam
+  'November 5': { 33: [16*60, 17*60 + 45], 6: [16*60, 17*60 + 45], 16: [16*60, 17*60 + 45], 27: [16*60, 17*60 + 45] },   // 2026-11-01 (Shaka): Simulacra + huzzhouse moved to Thu to un-cram Wed → Naman + mannuu + huzzhouse + Simulacra share the floor 4:00-5:45   // Vedz SOLO 4:00-5:00 in the slot Colors Still Fly held (Shaka 31 Oct: Colors Still Fly off the schedule, still in the garden circle + stewards) · Simulacra 5:00-6:00 (the closing jam joins at 5:45)
 };
 function sharedMins(iv) { let s = 0; for (let i = 0; i < iv.length; i++) for (let j = i + 1; j < iv.length; j++) s += Math.max(0, Math.min(iv[i].e, iv[j].e) - Math.max(iv[i].s, iv[j].s)); return s; }
 function overlaps(iv) { const out = []; for (let i = 0; i < iv.length; i++) for (let j = i + 1; j < iv.length; j++) { const s = Math.max(iv[i].s, iv[j].s), e = Math.min(iv[i].e, iv[j].e); if (e > s) out.push({ a: iv[i].a, b: iv[j].a, s, e }); } return out; }
@@ -453,7 +454,7 @@ function saveArr() {
 }
 /* 2026-10-26 (Shaka): the live default IS his blessed arrangement (arrangement-live.json), reconciled
    against the computed default so acts added later still land on their day. null = computed default. */
-const BAKED_ARR = {"November 3": {"chill": [24, 39, 5], "energy": []}, "November 4": {"chill": [13, 15, 32, 34, 19], "energy": [20, 27, 23, 28, 16, 35]}, "November 5": {"chill": [12, 29, 30, 31], "energy": [33, 6]}, "November 6": {"chill": [40], "energy": []}};
+const BAKED_ARR = {"November 3": {"chill": [24, 39, 5], "energy": []}, "November 4": {"chill": [13, 15, 32, 34, 19], "energy": [20, 23, 28, 35]}, "November 5": {"chill": [12, 29, 30, 31], "energy": [33, 6, 16, 27]}, "November 6": {"chill": [40], "energy": []}};
 const COMPUTED_ARR = {"November 3": {"chill": [39, 5], "energy": [23, 28]}, "November 4": {"chill": [19, 13, 15, 32, 34], "energy": [27]}, "November 5": {"chill": [30, 12, 20, 24, 31, 29], "energy": [33, 6, 35]}, "November 6": {"chill": [16, 40], "energy": []}};
 /* 2026-10-31 (Shaka): off the schedule (stay in the garden circle + steward lists) — 18 = Colors Still Fly */
 const OFF_SCHED = new Set([18]);
