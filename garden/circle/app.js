@@ -59,7 +59,7 @@ async function boot() {
   // initEF({ ARTISTS, BY, esc, pick: (s2) => { if (!circle.includes(s2)) setCircle([...circle, s2]); select(s2); } });
   applyUrl();
   tonightRibbon();
-  $('#enter-label').textContent = 'Enter the circle';
+  $('#enter-label').textContent = 'Enter the circle'; window.__circleReady = true;
   $('#enter').addEventListener('click', () => { $('#loading').classList.add('gone'); orbit.auto = true; });
   renderer.setAnimationLoop(tick);
 }
@@ -473,10 +473,11 @@ function applyUrl() {
   const p = new URLSearchParams(location.search);
   const who = p.get('who'); const day = p.get('day'); const hash = location.hash.slice(1);
   if (who === 'everyone' || who === 'all') setCircle(ORDER, { everyone: true });
-  else if (who) setCircle(who.split(',').filter(s => BY[s]));
+  else if (who) { const ids = who.split(',').map(s => s.trim()).filter(Boolean), ok = ids.filter(s => BY[s]); setCircle(ok.length ? ok : dayCircle(3)); if (ok.length < ids.length) setTimeout(() => toast(`<b>${ids.length - ok.length} name${ids.length - ok.length > 1 ? 's' : ''} in this link ${ids.length - ok.length > 1 ? 'aren’t' : 'isn’t'} in the garden</b> (renamed or removed) — showing the rest.`), 600); }
   else if (day) setCircle(dayCircle(+day));
   else setCircle(dayCircle(3));                         // the opening day, so the floor is never empty on arrival
   if (hash && BY[hash]) { if (!circle.includes(hash)) setCircle([...circle, hash]); select(hash); }
+  else if (hash && hash.length < 60 && /^[a-z0-9-]+$/.test(hash)) setTimeout(() => toast('<b>That artist isn’t in the garden</b> — here’s the circle. Try 🌸 find an artist.'), 900);
 }
 function share() {
   const u = location.origin + location.pathname + (circle.length >= ORDER.length ? '?who=everyone' : circle.length ? '?who=' + circle.join(',') : '');
@@ -565,4 +566,4 @@ function tick() {
   renderer.render(scene, camera);
 }
 
-boot().catch((e) => { console.error(e); $('#enter-label').textContent = 'something broke — ' + e.message; });
+boot().catch((e) => { console.error(e); $('#enter-label').textContent = 'something broke — ' + e.message; window.__circleFallback && window.__circleFallback('The 3D circle hit an error on this device, so here is every artist as a simple list.'); });

@@ -194,7 +194,7 @@ input[type=range]{flex:1;accent-color:var(--gold);height:22px}
     <button class="pill" data-day="5">Nov 5</button>
     <button class="pill" data-day="6">Nov 6 · the long goodbye</button>
     <button class="pill teal" id="btn-add">➕ add artist</button>
-    <button class="pill violet" id="btn-radio">📻 the station</button>
+    <button class="pill violet" id="btn-radio">📻 station · soon</button>
   </div>
   <div id="measure">
     <label for="howmuch">how much of the circle</label>
@@ -237,6 +237,10 @@ input[type=range]{flex:1;accent-color:var(--gold);height:22px}
 <aside class="panel" id="radio" aria-label="the station">
   <header><h2>📻 The circle is a station</h2><button class="x" data-close="radio">✕</button></header>
   <div class="body">
+    <div class="tile soon" style="border-color:rgba(255,217,122,.55)">
+      <h4>🎶 The station opens soon</h4>
+      <p><b>Nothing is streaming yet</b> — no player here until a real, tested stream exists. Meanwhile, tap any figure in the circle to hear that artist on their own links (Instagram, SoundCloud, YouTube…), or come to the floor at the Jio World Centre, Nov 3–6.</p>
+    </div>
     <div class="tile">
       <h4>Alaska × Subcult — live coding · Nov 4 · 1:50p</h4>
       <p><b>MDRN</b> builds <i>infrastructure for underground music</i>: a micropayment patronage layer and a <b>federated internet radio where any community can run a station</b>. <b>Subcult</b> is where listeners pay artists directly. Someone who builds radio you can fork is going to write music you can read — on Nov 4 the typing happens in the circle.</p>
@@ -246,8 +250,8 @@ input[type=range]{flex:1;accent-color:var(--gold);height:22px}
     <div class="tile">
       <h4>patio.fm — Ethereum is the radio</h4>
       <div class="quote">"A tiny live radio that broadcasts audio and video through pending Ethereum transactions. Listening needs no wallet."</div>
-      <p>Patio Station was an ETHGlobal Tokyo finalist — and says it is rebuilding an ETHDenver 2024 experiment. The tie is simple: <b>the circle is broadcast on Ethereum itself</b> — listen on patio.fm, no wallet needed.</p>
-      <div class="links"><a class="pill teal" href="https://patio.fm" target="_blank" rel="noopener">🎙 listen on patio.fm</a></div>
+      <p>Patio Station was an ETHGlobal Tokyo finalist — and says it is rebuilding an ETHDenver 2024 experiment. The tie is simple: <b>the circle is broadcast on Ethereum itself</b> — our circle isn’t on it yet; we’ll link it here the day it is.</p>
+      <div class="links"><a class="pill teal" href="https://patio.fm" target="_blank" rel="noopener">patio.fm (their station)</a></div>
       <div class="honest">station link coming with the first set — nothing is live yet, and we won't say it is until it is.</div>
     </div>
     <div class="tile">
@@ -265,7 +269,7 @@ input[type=range]{flex:1;accent-color:var(--gold);height:22px}
     <li>👆 <b>Tap a figure</b> for who they are, when they play, their profile, rider and Devcon-app session</li>
     <li>🗓 <b>Nov 3 · 4 · 5 · 6</b> fill the circle with that day's players · <b>➕ add artist</b> picks anyone, one by one</li>
     <li>🎚 <b>The slider</b> is a measurement of the full circle — 0 is an empty floor, the far right is everyone</li>
-    <li>🎻 <b>Everyone plays together</b> is the dream: all 37 artists, Shaka and the ʻohana totem, in one web of light</li>
+    <li>🎻 <b>Everyone plays together</b> is the dream: every artist in the garden, Shaka and the ʻohana totem, in one web of light</li>
     <li>📸 The walls are the living slideshow of Open Source Orchestra 2022→2026 · scrub the years at the bottom</li>
     <li>🔗 <b>Share</b> copies a link that rebuilds exactly this circle (<kbd>?who=…</kbd>) · <kbd>#slug</kbd> opens an artist</li>
   </ul>
@@ -282,6 +286,28 @@ input[type=range]{flex:1;accent-color:var(--gold);height:22px}
   <div class="fine">Three.js in your browser · photos from four years of the orchestra · nothing to install · CC0</div>
   <div class="fine takedown" style="margin-top:10px">📸 Your face or name here and you’d rather it wasn’t? Tell any steward on the floor, or write to the ʻohana at <a href="mailto:<!--email_off--><!--email_off-->aloha@myagentohana.com<!--/email_off--><!--/email_off-->"><!--email_off-->aloha@myagentohana.com<!--/email_off--></a> — we take it down first and ask questions second. <a href="/takedown/">how a takedown works →</a></div>
 </div></div>
+
+<div id="fallback" hidden style="position:fixed;inset:0;z-index:60;overflow:auto;background:#0b0612;color:#f7ecd9;padding:24px;font-family:system-ui,sans-serif">
+  <h1 style="font-family:Georgia,serif;color:#ffd97a;margin:0 0 6px">The Full Circle — artist list</h1>
+  <p id="fb-why" style="opacity:.8;margin:0 0 14px">The 3D circle couldn’t start on this device or connection, so here is every artist as a simple list.</p>
+  <p style="margin:0 0 16px"><button onclick="location.reload()" style="padding:.5em 1em;border-radius:999px;border:1px solid #ffd97a;background:transparent;color:#ffd97a;cursor:pointer">↻ try the 3D circle again</button> · <a href="/schedule/" style="color:#ffd97a">full schedule →</a> · <a href="../profiles/" style="color:#ffd97a">all profiles →</a></p>
+  <ul id="fb-list" style="list-style:none;padding:0;margin:0;display:grid;gap:8px;grid-template-columns:repeat(auto-fill,minmax(240px,1fr))"></ul>
+</div>
+<script>
+(function(){
+  function show(why){ if(window.__circleReady) return; var f=document.getElementById('fallback'); if(!f.hidden) return;
+    if(why) document.getElementById('fb-why').textContent=why;
+    fetch('./data/artists.json').then(function(r){return r.json()}).then(function(d){
+      var e=function(s){return String(s||'').replace(/[&<>"]/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]})};
+      document.getElementById('fb-list').innerHTML=d.artists.filter(function(a){return a.kind!=='away'}).map(function(a){
+        return '<li style="border:1px solid #3a2a4a;border-radius:12px;padding:10px 12px"><b>'+e(a.name)+'</b>'+(a.set?'<br><small style="opacity:.75">'+e(a.set)+'</small>':'')+(a.tagline?'<br><small style="opacity:.6">'+e(a.tagline)+'</small>':'')+(a.profile?'<br><a style="color:#ffd97a" href="'+e(a.profile)+'">profile →</a>':'')+'</li>'}).join('');
+    }).catch(function(){});
+    f.hidden=false; }
+  window.__circleFallback=show;
+  try{ var c=document.createElement('canvas'); if(!(c.getContext('webgl2')||c.getContext('webgl'))) return show('This browser has 3D (WebGL) turned off, so here is every artist as a simple list.'); }catch(x){ return show(); }
+  setTimeout(function(){ show('The 3D circle is taking too long on this connection, so here is every artist as a simple list. You can retry any time.'); },15000);
+})();
+</script>
 
 <button id="gh-fab" aria-label="Find an artist in the garden (press /)"><span class="bl">🌸</span> find an artist <small>/</small></button>
 
