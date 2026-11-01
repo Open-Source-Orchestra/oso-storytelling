@@ -4,7 +4,6 @@
    three.js r169 vendored locally · no CDN, no trackers · CC0.
    ------------------------------------------------------------------------- */
 import * as THREE from './vendor/three.module.min.js';
-import { VRButton } from './vendor/VRButton.js';
 import { initFinder } from './finder.js';
 // import { initEF } from './ef.js?v=20261029e';
 import { mergeEdits, applyLocal } from './overlay.js';
@@ -76,7 +75,6 @@ function buildScene() {
   renderer.setPixelRatio(Math.min(devicePixelRatio, IS_TOUCH ? 1.5 : 1.75));
   renderer.setSize(innerWidth, innerHeight);
   renderer.toneMapping = THREE.ACESFilmicToneMapping; renderer.toneMappingExposure = 1.08;
-  renderer.xr.enabled = true;
   $('#stage').appendChild(renderer.domElement);
   camera = new THREE.PerspectiveCamera(54, innerWidth / innerHeight, 0.08, 120);
   player = new THREE.Group(); player.position.set(0, 0, 4.8); player.add(camera); scene.add(player);
@@ -120,13 +118,6 @@ function buildScene() {
   buildThreads();
   buildRadioTile();
 
-  // VR
-  const vrb = VRButton.createButton(renderer); vrb.classList.add('vrbtn'); $('#vrslot').appendChild(vrb);
-  for (let i = 0; i < 2; i++) {
-    const c = renderer.xr.getController(i);
-    const line = new THREE.Line(new THREE.BufferGeometry().setFromPoints([new THREE.Vector3(), new THREE.Vector3(0, 0, -1)]), new THREE.LineBasicMaterial({ color: C.goldBright, transparent: true, opacity: 0.6 }));
-    line.scale.z = 6; c.add(line); c.addEventListener('selectstart', () => onXRSelect(c)); player.add(c);
-  }
   bindPointer();
   addEventListener('resize', onResize);
 }
