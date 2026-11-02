@@ -1050,6 +1050,10 @@
    "seated": false,
    "links": [
     {
+     "label": "SoundCloud",
+     "url": "https://soundcloud.com/dextroalien"
+    },
+    {
      "label": "Instagram",
      "url": "https://www.instagram.com/dextroblue/"
     }
