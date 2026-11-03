@@ -286,7 +286,7 @@ function flow(a) {
 }
 const ARC = {   // 2026-10-31 (Shaka): catchier, aloha-filled day intros
   'November 3': '🌅 Tue · opening day! 🤫 the ceremony first, then Gujarat folk, Songs of India & raga on electric guitar 🎸 · 2:30 singer-songwriter Vivek Teegalapally 🎶 · from 4:00 Open Source Orchestra CROPS Jamming for Ethereum’s values 🌾 every musician & singer, come warm the floor 🌺',
-  'November 4': '☕ Wed · coffee-lounge Wednesday 🎷 modular synths, acoustic fire, a room that writes a song together & live code 💻 · from 4:00 the Open Source Orchestra jams for Ethereum’s values 🌾 · no DJ sets today 🤙',
+  'November 4': '☕ Wed · coffee-lounge Wednesday 🎷 modular synths, acoustic fire, a room that writes a song together & live code 💻 · after four some of our DJs share the floor 🎧🤝 then the last 18 minutes = a LIVE instrument jam 🥁🎸🤙',
   'November 5': '🎤 Thu · the big one! 🧘 morning meditations → piano keys, Bollywood & the songwriters’ circle 🎶 · after four ALL our DJs share one floor 🤝 Naman, mannuu, huzzhouse, Simulacra, itscharann, Ekant, DJ Chalk, Vedz & Dex tag-team till the last dance 🔥🌺',
   'November 6': '🌺 Fri · the long goodbye 🤙 Open Source Orchestra all morning · Sounya · India’s own · Manu’s tribal downtempo · Alaska’s low-volume sundown · 3:33 Shaka + Open Source Orchestra glide into the Devcon closing party 🎉',
 };
@@ -586,6 +586,15 @@ const VIBES = {
     tail:   ['🎉 Open Source Orchestra — party jam-out', 'open decks · one last dance together'],
   },
 };
+/* 2026-11-03 (Shaka): Wed 4 Nov — some DJs share the floor 4:00–5:42 (open rotation), live instrument jam the last 18 min */
+const NO_DJ_SPLIT = { 'November 4': 17*60 + 42 };
+function djOpenHTML(t, mins) {
+  return `<div class="slot jam"><span class="time">${fmtTime(t)}</span>
+    <div class="body">
+      <div class="whohead"><div class="who"><span class="fmt-ico">🎧</span>🤝 DJs share the floor — open rotation</div></div>
+      <div class="tags"><span class="dim">Tag-team ·</span> ${minsTxt(mins)} <span class="dim">·</span> some of our DJs trade the decks · want a turn? reply in the Telegram group or tell a steward 💃🔊</div>
+    </div></div>`;
+}
 const vibe = (d, kind, fallback) => (VIBES[d] && VIBES[d][kind]) || fallback;
 
 /* 2026-10-19 (Shaka): a day can OPEN with an OSO set instead of an artist — the doors hour is ours.
@@ -836,7 +845,9 @@ function render() {
       const vc = vibe(d, 'close', ['🌆 Open Source Orchestra — the closing jam', 'the last 15 minutes · one more tune together · last note 6:00p sharp']);
       if (!energyActs.length) {
         const v = vibe(d, 'tail', ['Open Source Orchestra — open decks all evening', 'the floor is open · bring a USB, bring a friend']);
-        slots += jamSplitHTML(d, LIFT, CLOSE - LIFT, v[0], v[1], ms);   // 2026-11-01 (Shaka): Open Source Orchestra is already on the floor → no separate closing jam
+        const sp = NO_DJ_SPLIT[d];   // 2026-11-03 (Shaka): Wed = open DJ rotation then the last 18 min live jam
+        if (sp) { slots += djOpenHTML(LIFT, sp - LIFT); slots += jamSplitHTML(d, sp, CLOSE - sp, '🥁🎸 Open Source Orchestra — LIVE instrument jam', 'the last 18 minutes · bring your instrument or your voice, or pick up a permissionless one · last note 6:00p sharp', ms); }
+        else slots += jamSplitHTML(d, LIFT, CLOSE - LIFT, v[0], v[1], ms);   // 2026-11-01 (Shaka): Open Source Orchestra is already on the floor → no separate closing jam
       } else {
         if (frontJam) { const v = vibe(d, 'tail', ['Open Source Orchestra — open decks', 'the floor is open · bring a USB, bring a friend']); slots += jamSplitHTML(d, LIFT, frontJam, v[0], v[1], ms); }
         /* 2026-10-28: one row per act (whole set, drag-safe) + a "sharing the floor" row for every overlap + changeover
@@ -1071,7 +1082,9 @@ function copyDay(b) {
   else if (isLast) lines.push(`       🎉 CLOSING PARTY hosted by OPEN SOURCE ORCHESTRA — the whole loud window is the party`);
   if (!hand) {
     if (frontJam) jamSplit(LIFT, frontJam, 'open decks', 'the floor warms up');
-    if (!energyActs.length) { const v = vibe(d, 'tail', ['open decks', 'the floor is open all evening']); jamSplit(LIFT, CLOSE - LIFT, v[0].replace(/^.*?— /, ''), v[1]); }
+    if (!energyActs.length) { const v = vibe(d, 'tail', ['open decks', 'the floor is open all evening']); const sp = NO_DJ_SPLIT[d];
+      if (sp) { lines.push(`${fmtTime(LIFT)}  🎧 DJs SHARE THE FLOOR — open rotation, tag-team · ${minsTxt(sp - LIFT)} · want a turn? tell a steward`); jamSplit(sp, CLOSE - sp, 'LIVE instrument jam', 'the last 18 minutes · last note 6:00p sharp'); }
+      else jamSplit(LIFT, CLOSE - LIFT, v[0].replace(/^.*?— /, ''), v[1]); }
     floorClusters(lay.iv).forEach(c => {
       if (c.m.length === 1) return actLine(c.m[0].a, c.s);
       lines.push(`${fmtTime(c.s)}  🤝 SHARED FLOOR ${fmtTime(c.s)}–${fmtTime(c.e)} · ${c.m.length} DJs ${c.m.length === 2 ? 'b2b' : 'tag-team'} · nobody is trimmed`);
