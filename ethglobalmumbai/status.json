@@ -1,27 +1,103 @@
 {
-  "updated": "2026-11-06T04:55:00Z",
+  "updated": "2026-11-06T06:15:00Z",
   "deadline": "2026-11-07T03:30:00Z",
   "team": [
-    {"name": "Shaka", "role": "Artist + demo lead", "owns": "vision, artist consent, live fork, pitch"},
-    {"name": "Teammate", "role": "Payments (Hedera)", "owns": "x402 endpoint, split, HashScan proof, tests"},
-    {"name": "Teammate", "role": "Frontend", "owns": "profile page, wallet connect, claim-your-name, tip button"},
-    {"name": "Teammate", "role": "ENS + agent", "owns": "subnames, records, 0G steward agent, spend cap"},
-    {"name": "Teammate", "role": "Pitch / video / README", "owns": "≤3 min demo video, README, submission"}
+    {
+      "name": "Shaka",
+      "role": "Artist + demo lead",
+      "owns": "vision, artist consent, live fork, pitch"
+    },
+    {
+      "name": "Teammate",
+      "role": "Payments (Hedera)",
+      "owns": "x402 endpoint, split, HashScan proof, tests"
+    },
+    {
+      "name": "Teammate",
+      "role": "Frontend",
+      "owns": "profile page, wallet connect, claim-your-name, tip button"
+    },
+    {
+      "name": "Teammate",
+      "role": "ENS + agent",
+      "owns": "subnames, records, 0G steward agent, spend cap"
+    },
+    {
+      "name": "Teammate",
+      "role": "Pitch / video / README",
+      "owns": "≤3 min demo video, README, submission"
+    }
   ],
   "tasks": [
-    {"area": "Setup", "task": "Team formed, roles claimed", "state": "doing"},
-    {"area": "Setup", "task": "GitHub repo + team chat", "state": "todo"},
-    {"area": "Setup", "task": "Hedera testnet accounts + 0G faucet", "state": "todo"},
-    {"area": "Payments", "task": "First x402 payment settles on Hedera testnet", "state": "todo"},
-    {"area": "Payments", "task": "96.31 / 3.69 split on-chain", "state": "todo"},
-    {"area": "Verify", "task": "Steward invite link", "state": "todo"},
-    {"area": "Verify", "task": "Wallet signature claim", "state": "todo"},
-    {"area": "Verify", "task": "Claims logged to HCS topic", "state": "todo"},
-    {"area": "ENS", "task": "Issue artist subname with Hedera + agent records", "state": "todo"},
-    {"area": "Agent", "task": "Steward agent on 0G answers fans", "state": "todo"},
-    {"area": "Agent", "task": "Agent pays own 0G compute, spend cap", "state": "todo"},
-    {"area": "Frontend", "task": "Profile + claim + tip pages", "state": "todo"},
-    {"area": "Demo", "task": "Second artist live fork (with consent)", "state": "todo"},
-    {"area": "Submit", "task": "README + tx IDs + ≤3 min video + submit", "state": "todo"}
+    {
+      "area": "Setup",
+      "task": "Team formed, roles claimed",
+      "state": "doing"
+    },
+    {
+      "area": "Setup",
+      "task": "GitHub repo + team chat",
+      "state": "done"
+    },
+    {
+      "area": "Setup",
+      "task": "Hedera testnet accounts + 0G faucet",
+      "state": "todo"
+    },
+    {
+      "area": "Payments",
+      "task": "First x402 payment settles on Hedera testnet",
+      "state": "todo"
+    },
+    {
+      "area": "Payments",
+      "task": "96.31 / 3.69 split on-chain",
+      "state": "todo"
+    },
+    {
+      "area": "Verify",
+      "task": "Steward invite link",
+      "state": "todo"
+    },
+    {
+      "area": "Verify",
+      "task": "Wallet signature claim",
+      "state": "todo"
+    },
+    {
+      "area": "Verify",
+      "task": "Claims logged to HCS topic",
+      "state": "todo"
+    },
+    {
+      "area": "ENS",
+      "task": "Issue artist subname with Hedera + agent records",
+      "state": "todo"
+    },
+    {
+      "area": "Agent",
+      "task": "Steward agent on 0G answers fans",
+      "state": "todo"
+    },
+    {
+      "area": "Agent",
+      "task": "Agent pays own 0G compute, spend cap",
+      "state": "todo"
+    },
+    {
+      "area": "Frontend",
+      "task": "Profile + claim + tip pages",
+      "state": "todo"
+    },
+    {
+      "area": "Demo",
+      "task": "Second artist live fork (with consent)",
+      "state": "todo"
+    },
+    {
+      "area": "Submit",
+      "task": "README + tx IDs + ≤3 min video + submit",
+      "state": "todo"
+    }
   ]
 }
