@@ -1,0 +1,79 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>🎻 Fork the First Artist — ETHGlobal Mumbai · Open Source Orchestra</title><meta name="description" content="Team plan and live status for Fork the First Artist at ETHGlobal Mumbai 2026."><link rel="icon" href="/favicon.svg"><style>:root{color-scheme:dark}body{margin:0;background:#0f0d24;color:#f3ecd8;font:16px/1.55 system-ui,-apple-system,Segoe UI,sans-serif}
+main{max-width:900px;margin:auto;padding:20px 16px 60px}a{color:#fbe2a0}h1{font-family:Georgia,serif;font-weight:400;font-size:2rem;margin:.4em 0}
+h2{font-family:Georgia,serif;font-weight:400;border-bottom:1px solid rgba(251,226,160,.3);padding-bottom:.2em;margin-top:2em}
+.note{background:rgba(20,18,45,.85);border:1px solid rgba(251,226,160,.4);border-radius:12px;padding:12px 14px}
+table{border-collapse:collapse;width:100%}td,th{border-bottom:1px solid rgba(251,226,160,.2);padding:7px 6px;text-align:left;vertical-align:top}
+.s{white-space:nowrap;font-weight:600}.done{color:#8fe3a1}.doing{color:#fbe2a0}.todo{color:#9b96b8}.blocked{color:#ff8a8a}
+.bar{height:10px;background:#1b1838;border-radius:6px;overflow:hidden}.bar i{display:block;height:100%;background:linear-gradient(90deg,#b5179e,#fbe2a0)}
+pre{background:#1b1838;padding:12px;border-radius:8px;overflow:auto;font-size:13px}nav.top a{margin-right:14px}ol li,ul li{margin:.25em 0}</style></head><body><main>
+<nav class="top" aria-label="site"><a href="/">🎻 home</a><a href="/schedule/">🗓 Schedule</a><a href="/garden/circle/">🌺 Garden Circle</a><a href="/camera/">📸 Camera</a></nav>
+<h1>🎻 Fork the First Artist</h1>
+<p><b>ETHGlobal Mumbai 2026</b> · team plan &amp; live status · Open Source Orchestra</p>
+<p class="note">Any musician makes a profile and gets an <b>ENS name</b>, an <b>x402 payment rail on Hedera</b>, and their own <b>AI steward agent on 0G</b>. The agent takes payments; the money goes straight to the artist. <b>3.69%</b> pays the agent's own compute. <b>OSO takes zero cut, zero profit, no token.</b> Shaka is the first human artist on these rails — anyone can fork him.</p>
+
+<h2>⏱ Status</h2>
+<p id="count">Loading…</p><div class="bar"><i id="bar" style="width:0"></i></div>
+<p><small id="upd"></small></p>
+<table id="tasks"><thead><tr><th>Area</th><th>Task</th><th>State</th></tr></thead><tbody></tbody></table>
+
+<h2>👥 Team</h2>
+<table id="team"><thead><tr><th>Who</th><th>Role</th><th>Owns</th></tr></thead><tbody></tbody></table>
+
+<h2>🎬 The demo</h2>
+<ol><li>Artist opens their OSO profile → name, bio, photo, <b>own payout address</b>, ✅ consent.</li>
+<li><b>Claim your name</b> → <code>artist.&lt;parent&gt;.eth</code> pointing to their Hedera account and agent.</li>
+<li>Their steward agent goes live on 0G and answers fans from what the artist shared.</li>
+<li>A fan (or a fan's agent) asks for a song or tips → <b>HTTP 402</b> → settles on Hedera testnet → <b>96.31% artist / 3.69% agent compute</b>, visible on HashScan.</li>
+<li>The agent pays its own 0G inference from its share, under a spend cap.</li>
+<li><b>Live fork:</b> a second, consenting artist does it all on stage.</li></ol>
+
+<h2>🔐 Verification — how an artist claims</h2>
+<ol><li><b>Steward invite</b> — an OSO steward who knows the artist sends a one-time claim link.</li>
+<li><b>Wallet signature</b> — the artist signs "I am [name], claiming [name].&lt;parent&gt;.eth". No keys shared.</li>
+<li><b>Logged on Hedera</b> — inviter, artist, wallet and time go to a Hedera Consensus Service topic: public and tamper-evident.</li>
+<li><b>Then activate</b> — name, x402 rail and agent switch on.</li></ol>
+<p>Protections: nothing exists until the artist claims it · payouts only to the wallet that signed · a steward can freeze a disputed claim (logged too) · the agent only uses what the artist gives it.</p>
+<p class="note">“Artists are invited by people who know them, sign with their own wallet, and every claim is logged on Hedera — no impersonators, no middleman.”</p>
+
+<h2>🧭 Rules</h2>
+<ul><li><b>Agent collects, artist holds.</b> Only the 3.69% compute share sits with the agent.</li>
+<li><b>Consent first.</b> No name, agent or profile for anyone until they opt in.</li>
+<li><b>Zero cut, no token.</b></li><li><b>Spend cap</b> on demo compute ($5 total). <b>Testnet</b> for the demo.</li>
+<li><b>Open source</b>, every contributor credited, AI help disclosed. Prior OSO work = continuity; this weekend's work marked new.</li></ul>
+
+<h2>🏗 Architecture</h2>
+<pre>Fan / fan's agent
+   │  GET /tip or /song  →  402 Payment Required
+   ▼
+Artist Steward Agent (0G inference) ── x402 server (@x402/hedera)
+   ▼
+Hedera testnet ── split
+   ├── 96.31% → artist's own account
+   └──  3.69% → agent compute wallet → 0G Compute (capped)
+Claims → HCS topic (audit log)
+ENS: artist.&lt;parent&gt;.eth → Hedera account · agent URL · profile</pre>
+
+<h2>🏆 Sponsor tracks</h2>
+<ul><li><b>Hedera</b> — AI Agents That Pay: x402 on Hedera (<a href="https://docs.hedera.com/solutions/ai/x402">docs</a>)</li>
+<li><b>0G</b> — Agents That Pay for Themselves · Keep Building on 0G (continuity)</li><li><b>ENS</b> — subnames as artist identity</li></ul>
+<p><small>Verify prize rules on the ETHGlobal hacker dashboard.</small></p>
+
+<h2>🗓 Timeline</h2>
+<ul><li><b>Fri morning:</b> roles, repo, testnet accounts, first x402 payment.</li>
+<li><b>Fri day:</b> profile + claim + ENS + agent + split.</li>
+<li><b>Fri night:</b> full end-to-end, second-artist rehearsal, video.</li>
+<li><b>Sat 09:00 IST:</b> submit (README, tx IDs, video).</li></ul>
+<p><small>Team plan for ETHGlobal Mumbai · <a href="/takedown/">takedown</a></small></p>
+<script>
+const L={done:'✅ done',doing:'🔨 doing',todo:'⬜ to do',blocked:'⛔ blocked'};
+const e=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+fetch('status.json',{cache:'no-store'}).then(r=>r.json()).then(d=>{
+ const t=d.tasks,n=t.filter(x=>x.state==='done').length;
+ document.querySelector('#tasks tbody').innerHTML=t.map(x=>`<tr><td>${e(x.area)}</td><td>${e(x.task)}</td><td class="s ${e(x.state)}">${L[x.state]||e(x.state)}</td></tr>`).join('');
+ document.querySelector('#team tbody').innerHTML=d.team.map(x=>`<tr><td>${e(x.name)}</td><td>${e(x.role)}</td><td>${e(x.owns)}</td></tr>`).join('');
+ const h=Math.max(0,(new Date(d.deadline)-Date.now())/36e5);
+ document.getElementById('count').textContent=`${n}/${t.length} done · ${h.toFixed(1)} h to submission deadline (Sat 7 Nov 09:00 IST)`;
+ document.getElementById('bar').style.width=(100*n/t.length)+'%';
+ document.getElementById('upd').textContent='Last updated '+new Date(d.updated).toUTCString();
+}).catch(()=>{document.getElementById('count').textContent='Status unavailable — see plan below.'});
+</script></main></body></html>
